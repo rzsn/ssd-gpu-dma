@@ -14,6 +14,7 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <time.h>
+#include <inttypes.h>
 
 #define MIN(a, b) ((a) <= (b) ? (a) : (b))
 
@@ -23,7 +24,7 @@ uint64_t timediff_us(struct timespec* start, struct timespec* end) {
 
 void print_stats(struct timespec* start, struct timespec* end, size_t bytes) {
         uint64_t diff = timediff_us(start, end);
-        fprintf(stderr, "Done in %lldus, %fMB/s\n", diff, (double)bytes/(double)diff);
+        fprintf(stderr, "Done in %" PRIu64 "us, %fMB/s\n", diff, (double)bytes/(double)diff);
 }
 
 static void print_ctrl_info(FILE* fp, const struct nvm_ctrl_info* info)
