@@ -139,6 +139,12 @@ static long map_user_pages(struct map* map)
         return -ENOMEM;
     }
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 5, 0)
+    // mm/gup: remove unused vmas parameter from get_user_pages()
+    retval = get_user_pages(map->vaddr, map->n_addrs, FOLL_WRITE, pages);
+#else
+    // TODO: reorder with >= SINCE-MODIFIED on top of the decision tree!
+
 #if LINUX_VERSION_CODE <= KERNEL_VERSION(4, 5, 7)
 #warning "Building for older kernel, not properly tested"
     retval = get_user_pages(current, current->mm, map->vaddr, map->n_addrs, 1, 0, pages, NULL);
@@ -148,6 +154,9 @@ static long map_user_pages(struct map* map)
 #else
     retval = get_user_pages(map->vaddr, map->n_addrs, FOLL_WRITE, pages, NULL);
 #endif
+
+#endif
+
     if (retval <= 0)
     {
         kfree(pages);
