@@ -10,6 +10,7 @@
 #include <nvm_types.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 
 /*
@@ -47,6 +48,13 @@ void nvm_queue_clear(nvm_queue_t* q,            // NVM queue descriptor
 __host__ __device__ static inline
 nvm_cmd_t* nvm_sq_enqueue(nvm_queue_t* sq)
 {
+    // Check for INOP
+    if (sq->max_entries < 1)
+    {
+        fprintf( stderr, "[FAIL] nvm_sq_enqueue(sq) DUE sq->max_entries = %d\n", sq->max_entries );
+        return NULL;
+    }
+
     // Check if queue is full
     if ((uint16_t) ((sq->tail - sq->head) % sq->max_entries) == sq->max_entries - 1)
     {
