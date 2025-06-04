@@ -13,6 +13,14 @@ extern "C" {
 
 
 
+/*
+ * NVM MQES decoded value
+ * when CAP.MQES=0xFFFF +1 => 65536
+ */
+typedef uint32_t nvme_mqes_t;
+
+
+
 /* 
  * NVM controller handle.
  */
@@ -21,7 +29,7 @@ typedef struct
     size_t                  page_size;      // Memory page size used by the controller (MPS)
     uint8_t                 dstrd;          // Doorbell stride (in encoded form)
     uint64_t                timeout;        // Controller timeout in milliseconds (TO)
-    uint16_t                max_entries;    // Maximum queue entries supported (MQES)
+    nvme_mqes_t             max_entries;    // Maximum queue entries supported (MQES)
     size_t                  mm_size;        // Size of memory-mapped region
     volatile void*          mm_ptr;         // Memory-mapped pointer to BAR0 of the physical device
 } nvm_ctrl_t;
@@ -79,7 +87,7 @@ typedef struct __align__(32)
 typedef struct __align__(64) 
 {
     uint16_t                no;             // Queue number (must be unique per SQ/CQ pair)
-    uint16_t                max_entries;    // Maximum number of queue entries supported
+    nvme_mqes_t             max_entries;    // Maximum number of queue entries supported
     uint16_t                entry_size;     // Queue entry size
     uint32_t                head;           // Queue's head pointer
     uint32_t                tail;           // Queue's tail pointer
@@ -128,7 +136,7 @@ struct nvm_ctrl_info
     size_t                  db_stride;      // Doorbell stride (DSTRD)
     uint64_t                timeout;        // Controller timeout in milliseconds (TO)
     int                     contiguous;     // Contiguous queues required (CQR)
-    uint16_t                max_entries;    // Maximum queue entries supported (MQES)
+    nvme_mqes_t             max_entries;    // Maximum queue entries supported (MQES)
     uint8_t                 pci_vendor[4];  // PCI vendor and subsystem vendor identifier
     char                    serial_no[20];  // Serial number (NB! not null terminated)
     char                    model_no[40];   // Model number (NB! not null terminated)
