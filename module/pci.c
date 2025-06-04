@@ -2,6 +2,7 @@
 #include "list.h"
 #include "ctrl.h"
 #include "map.h"
+#include <linux/version.h>
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/kernel.h>
@@ -328,7 +329,13 @@ static int __init libnvm_helper_entry(void)
     }
 
     // Create character device class
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,4,0)
+    // driver core: class: remove module * from class_create()
+    dev_class = class_create(THIS_MODULE->name);
+#else
     dev_class = class_create(THIS_MODULE, DRIVER_NAME);
+#endif
+
     if (IS_ERR(dev_class))
     {
         unregister_chrdev_region(dev_first, num_ctrls);
