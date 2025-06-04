@@ -133,7 +133,7 @@ int create_queue_pair(nvm_aq_ref ref, struct queue_pair* qp, nvm_dma_t* cq_mem, 
 
 
 
-static void consume_completions(struct queue_pair* qp)
+static void* consume_completions(struct queue_pair* qp)
 {
     nvm_cpl_t* cpl;
     qp->stop = false;
@@ -155,6 +155,8 @@ static void consume_completions(struct queue_pair* qp)
         nvm_cq_update(&qp->cq);
         qp->num_cpls++;
     }
+
+    return NULL;
 }
 
 
