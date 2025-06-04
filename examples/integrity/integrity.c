@@ -246,6 +246,7 @@ static int identify_controller(nvm_aq_ref ref, const struct arguments* args, str
 #ifdef __DIS_CLUSTER__
     status = nvm_dis_dma_create(&window, ctrl, args->adapter, args->segment_id, ctrl->page_size);
 #else
+    (void)args;
     status = nvm_dma_create(&window, ctrl, ctrl->page_size);
 #endif
     if (!nvm_ok(status))
